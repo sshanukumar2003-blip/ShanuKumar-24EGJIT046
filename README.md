@@ -1,73 +1,91 @@
-# JDBC Student Registration System
+# Java TCP Client-Server Program
 
-A Java console application that demonstrates JDBC connectivity with MySQL. It supports adding, viewing, searching, updating, and deleting student records.
+A simple Java networking project that demonstrates communication between a client and a server using TCP sockets from the `java.net` package.
 
-## Technologies
-- Java 17 or newer
-- JDBC (`java.sql`)
-- MySQL
-- MySQL Connector/J
+## Features
+
+- Server listens on port `5000`.
+- Client connects to `localhost` by default.
+- Client sends `Hello Server`.
+- Server prints the message and replies with `Hello Client!`.
+- Both sides close their connections safely.
+- Uses UTF-8 for text communication and try-with-resources to release sockets and streams.
+
+## Requirements
+
+- JDK 8 or later
 - Visual Studio Code (optional)
 
-## Project structure
+## Project Structure
+
 ```text
-JDBC/
-├── src/
-│   ├── StudentRegistration.java
-│   ├── Student.java
-│   ├── StudentDAO.java
-│   ├── DatabaseConnection.java
-│   └── db.properties
-├── sql/student_db.sql
-├── lib/mysql-connector-j-26.7.0.jar
-└── .vscode/settings.json
+JavaSocket/
+├── Client.java
+├── Server.java
+└── README.md
 ```
 
-## 1. Set up the database
-1. Start your MySQL server.
-2. Open MySQL Workbench or the MySQL command line.
-3. Run the SQL in `sql/student_db.sql`. It creates the `student_db` database and `students` table.
+**Important:** Start the server before starting the client. The server accepts one client and then exits after replying.
 
-## 2. Configure the connection
-Open `src/db.properties` and update `db.user` and `db.password` to match your local MySQL account. The default URL assumes MySQL runs on `localhost:3306`.
+## Expected Output
 
-## 3. Add the JDBC driver
-Place the MySQL Connector/J `.jar` file in the `lib` folder. This project includes `mysql-connector-j-26.7.0.jar`; if your provided Connector/J file has a different version, use that actual filename instead. VS Code settings include `lib/**/*.jar`.
+### Server terminal
 
-## 4. Run in VS Code
-1. Open this project folder in VS Code.
-2. Ensure the Java Extension Pack is installed.
-3. Make sure MySQL is running and `src/db.properties` is configured.
-4. Open `src/StudentRegistration.java`.
-5. Click **Run** above `main`, or use the Run Java button.
-
-## 5. Run from Command Prompt
-From the project root, compile:
-```cmd
-javac -cp "lib\mysql-connector-j-26.7.0.jar" -d bin src\*.java
+```text
+Server started on port 5000.
+Waiting for a client...
+Client connected: /127.0.0.1
+Client says: Hello Server
+Server stopped.
 ```
-Then run:
-```cmd
-java -cp "bin;lib\mysql-connector-j-26.7.0.jar;src" StudentRegistration
+
+The client address can vary by computer.
+
+### Client terminal
+
+```text
+Connected to server at localhost:5000
+Server says: Hello Client!
 ```
-If the driver JAR has another name, replace it in both commands. `src` is included in the runtime classpath so Java can read `db.properties`.
 
-## Menu
-- `1` Add student
-- `2` View all students
-- `3` Search student by ID
-- `4` Update student
-- `5` Delete student
-- `0` Exit
+## Test Cases
 
-## Common errors
-- **Access denied for user**: update username/password in `src/db.properties`.
-- **Communications link failure**: make sure the MySQL server is running and the port in `db.url` is correct.
-- **No suitable driver / driver class error**: ensure the Connector/J JAR is inside `lib` and included in the classpath.
-- **Unknown database `student_db`**: run `sql/student_db.sql` first.
+1. **Normal run:** Start the server, then the client. Confirm the client receives `Hello Client!`.
+2. **Client before server:** Run the client without starting the server. It should show a connection error rather than crash.
+3. **Port conflict:** If port `5000` is already in use, the server reports an error. Stop the other program or change the port in both files.
+4. **Repeat test:** Start `java Server` again for each new client run, because this example handles one client per server launch.
 
-## Security note
-`db.properties` contains local credentials. Do not commit a real database password to a public repository. Before publishing, replace it with a placeholder and keep your real credentials private.
+## How It Works
+
+- `ServerSocket` waits for incoming TCP connections.
+- `Socket` represents the connection between the client and server.
+- `BufferedReader` reads text lines.
+- `PrintWriter` sends text lines.
+- `readLine()` waits until it receives a line ending, so `println()` is used to send messages.
+
+## Limitations
+
+- This is a basic request-and-reply demonstration, not a continuous chat application.
+- The server handles one client and one message per launch.
+- It is intended for learning Java networking, not production use.
+
+<!-- ## Run in VS Code on Windows
+
+
+ 1  ``
+   javac Server.java Client.java
+   ```
+
+  2 ```
+   java Server
+   ```
+
+6. In the second terminal, run the client:
+
+   ```powershell
+   java Client
+   ``` -->
 
 ## Author
-Shanu Kumar
+
+Kovid Gupta
