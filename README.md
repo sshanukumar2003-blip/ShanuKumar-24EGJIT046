@@ -1,100 +1,73 @@
-﻿# Student Registration Form (Java Swing)
+# JDBC Student Registration System
 
-A simple desktop-based Student Registration Form built using Java Swing. This project demonstrates GUI components, event handling, input validation, radio buttons, checkboxes, and dialog boxes.
+A Java console application that demonstrates JDBC connectivity with MySQL. It supports adding, viewing, searching, updating, and deleting student records.
 
-## Features
+## Technologies
+- Java 17 or newer
+- JDBC (`java.sql`)
+- MySQL
+- MySQL Connector/J
+- Visual Studio Code (optional)
 
-- Enter student name, age, roll number, and branch.
-- Select a gender using radio buttons.
-- Accept the Terms and Conditions using a checkbox.
-- Validate required fields and age input.
-- Display a registration confirmation dialog after successful validation.
-- Reset the form fields using the Reset button.
-
-## Technologies Used
-
-- Java
-- Java Swing
-- JDK 8 or later (compilation checked with JDK 21)
-
-## Project Structure
-
+## Project structure
 ```text
-Form-Java/
-├── StudentRegistration.java
-└── README.md
+JDBC/
+├── src/
+│   ├── StudentRegistration.java
+│   ├── Student.java
+│   ├── StudentDAO.java
+│   ├── DatabaseConnection.java
+│   └── db.properties
+├── sql/student_db.sql
+├── lib/mysql-connector-j-26.7.0.jar
+└── .vscode/settings.json
 ```
 
-## Requirements
+## 1. Set up the database
+1. Start your MySQL server.
+2. Open MySQL Workbench or the MySQL command line.
+3. Run the SQL in `sql/student_db.sql`. It creates the `student_db` database and `students` table.
 
-1. Install a Java Development Kit (JDK).
-2. Install Visual Studio Code.
-3. Install the **Extension Pack for Java** in VS Code.
+## 2. Configure the connection
+Open `src/db.properties` and update `db.user` and `db.password` to match your local MySQL account. The default URL assumes MySQL runs on `localhost:3306`.
 
-Verify Java is installed by opening a terminal and running:
+## 3. Add the JDBC driver
+Place the MySQL Connector/J `.jar` file in the `lib` folder. This project includes `mysql-connector-j-26.7.0.jar`; if your provided Connector/J file has a different version, use that actual filename instead. VS Code settings include `lib/**/*.jar`.
 
-```bash
-java -version
-javac -version
+## 4. Run in VS Code
+1. Open this project folder in VS Code.
+2. Ensure the Java Extension Pack is installed.
+3. Make sure MySQL is running and `src/db.properties` is configured.
+4. Open `src/StudentRegistration.java`.
+5. Click **Run** above `main`, or use the Run Java button.
+
+## 5. Run from Command Prompt
+From the project root, compile:
+```cmd
+javac -cp "lib\mysql-connector-j-26.7.0.jar" -d bin src\*.java
 ```
-
-Both commands should display a version number.
-
-## Run the Project in VS Code
-
-1. Download or clone this repository.
-2. Open VS Code.
-3. Select **File → Open Folder** and choose the project folder.
-4. Open `StudentRegistration.java`.
-5. Run the program using the **Run Java** option above `main()`, or use the terminal commands below.
-
-### Run from the terminal
-
-Open the VS Code terminal using **Terminal → New Terminal**. Make sure the terminal is in the folder containing `StudentRegistration.java`, then run:
-
-```bash
-javac StudentRegistration.java
-java StudentRegistration
+Then run:
+```cmd
+java -cp "bin;lib\mysql-connector-j-26.7.0.jar;src" StudentRegistration
 ```
+If the driver JAR has another name, replace it in both commands. `src` is included in the runtime classpath so Java can read `db.properties`.
 
-The first command compiles the source file. The second launches the form.
+## Menu
+- `1` Add student
+- `2` View all students
+- `3` Search student by ID
+- `4` Update student
+- `5` Delete student
+- `0` Exit
 
-Run the project on a desktop session that supports graphical applications. A headless environment cannot display the Swing window.
+## Common errors
+- **Access denied for user**: update username/password in `src/db.properties`.
+- **Communications link failure**: make sure the MySQL server is running and the port in `db.url` is correct.
+- **No suitable driver / driver class error**: ensure the Connector/J JAR is inside `lib` and included in the classpath.
+- **Unknown database `student_db`**: run `sql/student_db.sql` first.
 
-## How to Use
-
-1. Launch the application.
-2. Enter the student's name, age, roll number, and branch.
-3. Select Male or Female.
-4. Tick **Accept Terms and Conditions**.
-5. Click **Submit** to validate the fields and display the registration details.
-6. Click **Reset** to clear the form.
-
-## Validation
-
-- Name, age, roll number, and branch must not be empty.
-- Age must be a number between 0 and 100.
-- A gender option must be selected.
-- The Terms and Conditions checkbox must be selected.
-
-## Current Limitations
-
-- Student details are displayed in a dialog and are not stored permanently.
-- The Terms and Conditions checkbox does not display the terms themselves.
-- The form uses fixed positioning, so its layout is not responsive.
-- Only Male and Female are available as gender options.
-
-## Future Improvements
-
-- Save student records to a file or database.
-- Improve the interface using a layout manager.
-- Add more robust validation for names and roll numbers.
-- Display the Terms and Conditions before acceptance.
+## Security note
+`db.properties` contains local credentials. Do not commit a real database password to a public repository. Before publishing, replace it with a placeholder and keep your real credentials private.
 
 ## Author
-
-Shanu Kumar
-
-## License
-
-This project is provided for educational and academic use. Add a specific open-source license if you intend to publish it for reuse by others.
+Kovid Gupta
