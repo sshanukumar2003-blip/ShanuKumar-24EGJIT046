@@ -1,6 +1,7 @@
 package com.servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,25 +13,16 @@ import jakarta.servlet.http.HttpServletResponse;
 public class HelloServlet extends HttpServlet {
 
     @Override
-    protected void doPost(
+    protected void doGet(
             HttpServletRequest request,
-            HttpServletResponse response)
-            throws ServletException, IOException {
+            HttpServletResponse response
+    ) throws ServletException, IOException {
 
-        // Read form data
-        String name = request.getParameter("name");
-        String email = request.getParameter("email");
-        String course = request.getParameter("course");
-        String age = request.getParameter("age");
+        response.setContentType("text/html");
 
-        // Store data in request scope
-        request.setAttribute("name", name);
-        request.setAttribute("email", email);
-        request.setAttribute("course", course);
-        request.setAttribute("age", age);
+        PrintWriter out = response.getWriter();
 
-        // Forward request to JSP
-        request.getRequestDispatcher("result.jsp")
-                .forward(request, response);
+        out.println("<h1>Hello Students!</h1>");
+        out.println("<h2>Welcome to Servlet Programming</h2>");
     }
 }
