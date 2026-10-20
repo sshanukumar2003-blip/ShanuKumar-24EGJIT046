@@ -1,35 +1,17 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.nio.charset.StandardCharsets;
+import java.rmi.Naming;
 
-/** Sends one message to the server and prints its reply. */
+/** Looks up the remote calculator and calls its methods. */
 public class Client {
     public static void main(String[] args) {
-        String host = args.length > 0 ? args[0] : "localhost";
-        int port = 5000;
+        try {
+            Calculator calculator = (Calculator) Naming.lookup(
+                    "rmi://localhost:1099/Calculator");
 
-        try (Socket socket = new Socket(host, port);
-             BufferedReader input = new BufferedReader(
-                     new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
-             PrintWriter output = new PrintWriter(socket.getOutputStream(), true,
-                     StandardCharsets.UTF_8)) {
-
-            System.out.println("Connected to server at " + host + ":" + port);
-            output.println("Hello Server");
-
-            String response = input.readLine();
-            if (response != null) {
-                System.out.println("Server says: " + response);
-            } else {
-                System.out.println("Server closed the connection without replying.");
-            }
-
-        } catch (IOException e) {
-            System.out.println("Could not connect to the server: " + e.getMessage());
-            System.out.println("Start Server.java first and make sure port 5000 is available.");
+            System.out.println("Addition (10 + 20) = " + calculator.add(10, 20));
+            System.out.println("Subtraction (20 - 10) = " + calculator.subtract(20, 10));
+        } catch (Exception e) {
+            System.err.println("Could not call the remote calculator: " + e.getMessage());
+            System.err.println("Start Server.java first and make sure both programs use port 1099.");
         }
     }
 }

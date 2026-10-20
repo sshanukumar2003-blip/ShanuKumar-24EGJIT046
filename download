@@ -1,4 +1,1 @@
-bin/
 *.class
-.vscode/.classpath
-.vscode/.project

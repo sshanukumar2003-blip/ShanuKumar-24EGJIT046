@@ -1,91 +1,87 @@
-# Java TCP Client-Server Program
+# Remote Calculator Using Java RMI
 
-A simple Java networking project that demonstrates communication between a client and a server using TCP sockets from the `java.net` package.
+A simple Java Remote Method Invocation (RMI) project. The client calls calculator methods that are implemented by a remote object registered with an RMI registry.
 
 ## Features
 
-- Server listens on port `5000`.
-- Client connects to `localhost` by default.
-- Client sends `Hello Server`.
-- Server prints the message and replies with `Hello Client!`.
-- Both sides close their connections safely.
-- Uses UTF-8 for text communication and try-with-resources to release sockets and streams.
+- Remote addition and subtraction methods
+- RMI remote interface
+- Remote object implementation
+- RMI registry started by the server
+- Client lookup using `Naming.lookup()`
 
 ## Requirements
 
-- JDK 8 or later
+- JDK 8 or later (JDK 17 or 21 recommended)
 - Visual Studio Code (optional)
 
 ## Project Structure
 
 ```text
-JavaSocket/
-├── Client.java
+RMI-Calculator/
+├── Calculator.java
+├── CalculatorImpl.java
 ├── Server.java
-└── README.md
+├── Client.java
+├── README.md
+└── .gitignore
 ```
 
-**Important:** Start the server before starting the client. The server accepts one client and then exits after replying.
+## Run in VS Code on Windows
 
-## Expected Output
+Open this folder in VS Code, then select **Terminal → New Terminal**.
 
-### Server terminal
+### 1. Compile the source files
+
+```powershell
+javac Calculator.java CalculatorImpl.java Server.java Client.java
+```
+
+### 2. Start the server
+
+In Terminal 1, run:
+
+```powershell
+java Server
+```
+
+The server starts an RMI registry on port `1099` and registers the calculator service. Keep this terminal open.
+
+### 3. Run the client
+
+Open a second terminal in the same folder and run:
+
+```powershell
+java Client
+```
+
+## Expected Client Output
 
 ```text
-Server started on port 5000.
-Waiting for a client...
-Client connected: /127.0.0.1
-Client says: Hello Server
-Server stopped.
+Addition (10 + 20) = 30
+Subtraction (20 - 10) = 10
 ```
 
-The client address can vary by computer.
-
-### Client terminal
-
-```text
-Connected to server at localhost:5000
-Server says: Hello Client!
-```
-
-## Test Cases
-
-1. **Normal run:** Start the server, then the client. Confirm the client receives `Hello Client!`.
-2. **Client before server:** Run the client without starting the server. It should show a connection error rather than crash.
-3. **Port conflict:** If port `5000` is already in use, the server reports an error. Stop the other program or change the port in both files.
-4. **Repeat test:** Start `java Server` again for each new client run, because this example handles one client per server launch.
+The server terminal should show that the RMI server started and the calculator service was registered.
 
 ## How It Works
 
-- `ServerSocket` waits for incoming TCP connections.
-- `Socket` represents the connection between the client and server.
-- `BufferedReader` reads text lines.
-- `PrintWriter` sends text lines.
-- `readLine()` waits until it receives a line ending, so `println()` is used to send messages.
+- `Calculator.java` defines the remote methods.
+- `CalculatorImpl.java` implements the methods and exports the remote object.
+- `Server.java` starts the registry and binds the object under the name `Calculator`.
+- `Client.java` looks up the service and invokes its remote methods.
+
+## Troubleshooting
+
+- **Connection refused:** Start `Server.java` before running `Client.java`.
+- **Port 1099 already in use:** Stop the other RMI server or Java process using that port.
+- **Class not found:** Run the compile command from the folder containing all four `.java` files.
+- Run both programs on the same computer for this example. For different computers, configure the host address and network/firewall accordingly.
 
 ## Limitations
 
-- This is a basic request-and-reply demonstration, not a continuous chat application.
-- The server handles one client and one message per launch.
-- It is intended for learning Java networking, not production use.
-
-<!-- ## Run in VS Code on Windows
-
-
- 1  ``
-   javac Server.java Client.java
-   ```
-
-  2 ```
-   java Server
-   ```
-
-6. In the second terminal, run the client:
-
-   ```powershell
-   java Client
-   ``` -->
+This is an educational example with addition and subtraction only. It does not implement authentication or production-grade security.
 
 ## Author
 
-Shanu Kumar
+Kovid Gupta
